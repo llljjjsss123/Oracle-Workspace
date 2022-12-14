@@ -331,3 +331,54 @@ FROM DUAL;
 
 SELECT TO_DATE('000101')
 FROM DUAL;--0으로 시작하는 년도를 다룰때는 반드시 ' '를붙여서 문자열처럼 다뤄줘야함.
+
+SELECT TO_DATE('20221104','YYYYMMDD')
+FROM DUAL;--YY/MM/DD
+
+SELECT TO_DATE('091129 143050','YYMMDD HH24:MI:SS')
+FROM DUAL;
+
+SELECT TO_DATE('220806','YYMMDD')
+FROM DUAL;
+
+SELECT TO_DATE('980806','YYMMDD')
+FROM DUAL;--2098년도
+--TO_DATE()함수를이용해서 DATE형식으로 변환시 두자리 년도에 대해 YY형식을 적용시키면 무조건 현재세기(20)를 붙여줌
+SELECT TO_DATE('220806','RRMMDD')
+FROM DUAL;--2022년
+SELECT TO_DATE('980806','RRMMDD')
+FROM DUAL;
+--두자리년도에 대해RR포맷을 적용시켰을 경우=>50이상이면 이전세기, 50미만이면 현재세기(반올림)
+/*
+CHARACTER->NUMBER
+TO _NUMBER(CHARACTER, 포맥):문자형데이터를 숫자형으로 변환.
+*/
+--자동형변환의 예시(문자열->숫자)
+SELECT '123'+'123'
+FROM DUAL;--JAVA:123123 자동형변환후 산술연산이 진행됨.
+SELECT '10,000,000'+'550,000'
+FROM DUAL;--문자포함하고 있어서 자동형변환이 안된다.
+
+SELECT TO_NUMBER('10,000,000', '99,999,999')+TO_NUMBER('550,000', '999,999')
+FROM DUAL;
+SELECT TO_NUMBER('0123')
+FROM DUAL;
+--문자열, 숫자, 날짜 형변환끝--
+------------------------------------------------------------
+--NULL:값이 존재하지 않음 의미
+--NULL:처리함수들:NVL, NVL2, NULLF
+/*
+NULL 처리함수
+NVL(컬럼명, 해당 컬럼값이 NULL일 경우 반환할 반환값)
+해당컬럼값이 존재할 경우(NULL이 아닐경우)기존의 컬럼 값을 반환.
+해당컬럼값이 존재하지 않을경우(NULL일 경우) 내가 제시한 특정값을 반환
+*/
+--사원명,보너스,보너스가 없는 경우 0출력
+SELECT EMP_NAME, BONUS, NVL(BONUS,0)
+FROM EMPLOYEE;
+--보너스 포함 연봉 조회.(SALARY+SALARY*BONUS)*12
+SELECT EMP_NAME, (SALARY+(SALARY*NVL(BONUS, 0) ))*12 AS "보너스가 포함된 연봉"
+FROM EMPLOYEE;
+--사원명, 부서코드(부서코드가 없는경우 '없음')조회
+SELECT EMP_NAME,NVL(DEPT_CODE,'없음')
+FROM EMPLOYEE;
